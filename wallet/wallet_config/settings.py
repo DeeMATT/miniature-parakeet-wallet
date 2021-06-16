@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'api_utils',
     'wallet_manager',
+    'errors'
 ]
 
 MIDDLEWARE = [
