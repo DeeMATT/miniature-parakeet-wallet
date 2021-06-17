@@ -79,7 +79,7 @@ class WalletsAfricaAPI:
             logger.error(e)
             return None
 
-    def generate_wallet(self, first_name, last_name, email, birthday, currency="NGN"):
+    def generate_wallet(self, first_name, last_name, email, birthday, phone_number, currency="NGN"):
         """
         Generate a wallet
         """
@@ -89,6 +89,7 @@ class WalletsAfricaAPI:
                 "lastName": last_name,
                 "email": email,
                 "dateOfBirth": birthday,
+                "phoneNumber": phone_number,
                 "currency": currency,
                 "secretKey": self.secret_key
             })
