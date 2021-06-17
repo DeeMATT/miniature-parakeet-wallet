@@ -15,3 +15,5 @@ class UserWalletData(models.Model):
     bank_name = models.TextField(null=True)
     account_name = models.TextField(null=True)
     available_balance = models.TextField(null=True)
+
+    wallet_key = models.TextField(null=True)
