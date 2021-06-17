@@ -58,7 +58,7 @@ class WalletsAfricaAPI:
         except Exception as e:
             logger.error("_wallet_api_request@Error")
             logger.error(e)
-            return None, False
+            return None, str(e)
 
     def check_balance(self, currency="NGN"):
         """
@@ -77,7 +77,7 @@ class WalletsAfricaAPI:
         except Exception as e:
             logger.error("check_balance@Error")
             logger.error(e)
-            return None, False, False
+            return None, str(e)
 
     def generate_wallet(self, first_name, last_name, email, birthday, phone_number, currency="NGN"):
         """
@@ -100,7 +100,7 @@ class WalletsAfricaAPI:
         except Exception as e:
             logger.error("generate_wallet@Error")
             logger.error(e)
-            return None, False
+            return None, str(e)
 
     def debit_wallet(self, amount, phoneNumber, reference):
         """
@@ -120,7 +120,7 @@ class WalletsAfricaAPI:
         except Exception as e:
             logger.error("debit_wallet@Error")
             logger.error(e)
-            return None, False
+            return None, str(e)
 
     def credit_wallet(self, reference, amount, phoneNumber):
         """
@@ -141,7 +141,7 @@ class WalletsAfricaAPI:
         except Exception as e:
             logger.error("credit_wallet@Error")
             logger.error(e)
-            return None, False
+            return None, str(e)
 
     def set_wallet_password(self, password, phoneNumber):
         """
@@ -160,7 +160,7 @@ class WalletsAfricaAPI:
         except Exception as e:
             logger.error("set_wallet_password@Error")
             logger.error(e)
-            return None, False
+            return None, str(e)
 
     def set_wallet_pin(self, pin, phoneNumber):
         """
@@ -179,7 +179,7 @@ class WalletsAfricaAPI:
         except Exception as e:
             logger.error("set_wallet_pin@Error")
             logger.error(e)
-            return None, False
+            return None, str(e)
 
     def get_wallet_transactions(self, pin, phoneNumber, dateFrom, dateTo, transactionType=0, take=10, skip=0, currency="NGN"):
         """
@@ -204,7 +204,7 @@ class WalletsAfricaAPI:
         except Exception as e:
             logger.error("get_wallet_transactions@Error")
             logger.error(e)
-            return None, False
+            return None, str(e)
 
     def get_wallet_by_phone(self, phoneNumber):
         """
@@ -222,7 +222,7 @@ class WalletsAfricaAPI:
         except Exception as e:
             logger.error("get_wallet_by_phone@Error")
             logger.error(e)
-            return None, False
+            return None, str(e)
 
     def get_wallet_by_email(self, email):
         """
@@ -240,7 +240,7 @@ class WalletsAfricaAPI:
         except Exception as e:
             logger.error("get_wallet_by_phone@Error")
             logger.error(e)
-            return None, False
+            return None, str(e)
 
     def get_wallet_balance(self, phoneNumber, currency="NGN"):
         """
@@ -259,7 +259,7 @@ class WalletsAfricaAPI:
         except Exception as e:
             logger.error("get_wallet_balance@Error")
             logger.error(e)
-            return None, False
+            return None, str(e)
 
     def get_wallet_acct_number(self, phoneNumber):
         """
@@ -277,7 +277,7 @@ class WalletsAfricaAPI:
         except Exception as e:
             logger.error("get_wallet_acct_number@Error")
             logger.error(e)
-            return None, False
+            return None, str(e)
 
     def get_all_banks(self):
         """
@@ -290,7 +290,7 @@ class WalletsAfricaAPI:
         except Exception as e:
             logger.error("get_bank_transfer_info@Error")
             logger.error(e)
-            return None, False
+            return None, str(e)
 
     def get_bank_transfer_info(self, reference):
         """
@@ -308,7 +308,7 @@ class WalletsAfricaAPI:
         except Exception as e:
             logger.error("get_bank_transfer_info@Error")
             logger.error(e)
-            return None, False
+            return None, str(e)
 
     def bank_account_enquiry(self, bankCode, accountNumber):
         """
@@ -327,7 +327,7 @@ class WalletsAfricaAPI:
         except Exception as e:
             logger.error("bank_account_enquiry@Error")
             logger.error(e)
-            return None, False
+            return None, str(e)
 
     def bank_account_transfer(self, bankCode, accountNumber, amount, accountName, reference, description):
         """
@@ -350,4 +350,4 @@ class WalletsAfricaAPI:
         except Exception as e:
             logger.error("bank_account_transfer@Error")
             logger.error(e)
-            return None, False
+            return None, str(e)
