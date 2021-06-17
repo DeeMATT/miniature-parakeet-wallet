@@ -51,9 +51,9 @@ class WalletsAfricaAPI:
 
             if response_status_code not in range(200, 299):
                 data = response['Response']
-                return self._error_response(response_status_code, data)
+                return self._error_response(response_status_code, data), 'failed'
 
-            return response['Data']
+            return response['Data'], 'success'
 
         except Exception as e:
             logger.error("_wallet_api_request@Error")
@@ -71,8 +71,8 @@ class WalletsAfricaAPI:
                 "secretKey": self.secret_key
             })
             
-            response = self._wallet_api_request("self/balance", "POST", payload)
-            return response
+            response, msg = self._wallet_api_request("self/balance", "POST", payload)
+            return response, msg
             
         except Exception as e:
             logger.error("check_balance@Error")
@@ -94,8 +94,8 @@ class WalletsAfricaAPI:
                 "secretKey": self.secret_key
             })
 
-            response = self._wallet_api_request("wallet/generate", "POST", payload)
-            return response
+            response, msg = self._wallet_api_request("wallet/generate", "POST", payload)
+            return response, msg
             
         except Exception as e:
             logger.error("generate_wallet@Error")
@@ -114,8 +114,8 @@ class WalletsAfricaAPI:
                 "secretKey": self.secret_key
             })
 
-            response = self._wallet_api_request("wallet/debit", "POST", payload)
-            return response
+            response, msg = self._wallet_api_request("wallet/debit", "POST", payload)
+            return response, msg
             
         except Exception as e:
             logger.error("debit_wallet@Error")
@@ -135,8 +135,8 @@ class WalletsAfricaAPI:
                 "secretKey": self.secret_key
             })
 
-            response = self._wallet_api_request("wallet/debit", "POST", payload)
-            return response
+            response, msg = self._wallet_api_request("wallet/debit", "POST", payload)
+            return response, msg
             
         except Exception as e:
             logger.error("credit_wallet@Error")
@@ -154,8 +154,8 @@ class WalletsAfricaAPI:
                 "secretKey": self.secret_key
             })
 
-            response = self._wallet_api_request("wallet/password", "POST", payload)
-            return response
+            response, msg = self._wallet_api_request("wallet/password", "POST", payload)
+            return response, msg
             
         except Exception as e:
             logger.error("set_wallet_password@Error")
@@ -173,8 +173,8 @@ class WalletsAfricaAPI:
                 "secretKey": self.secret_key
             })
 
-            response = self._wallet_api_request("wallet/pin", "POST", payload)
-            return response
+            response, msg = self._wallet_api_request("wallet/pin", "POST", payload)
+            return response, msg
             
         except Exception as e:
             logger.error("set_wallet_pin@Error")
@@ -198,8 +198,8 @@ class WalletsAfricaAPI:
                 "secretKey": self.secret_key
             })
 
-            response = self._wallet_api_request("wallet/transactions", "POST", payload)
-            return response
+            response, msg = self._wallet_api_request("wallet/transactions", "POST", payload)
+            return response, msg
             
         except Exception as e:
             logger.error("get_wallet_transactions@Error")
@@ -216,8 +216,8 @@ class WalletsAfricaAPI:
                 "secretKey": self.secret_key
             })
 
-            response = self._wallet_api_request("wallet/getuser", "POST", payload)
-            return response
+            response, msg = self._wallet_api_request("wallet/getuser", "POST", payload)
+            return response, msg
             
         except Exception as e:
             logger.error("get_wallet_by_phone@Error")
@@ -234,8 +234,8 @@ class WalletsAfricaAPI:
                 "secretKey": self.secret_key
             })
 
-            response = self._wallet_api_request("wallet/getuser", "POST", payload)
-            return response
+            response, msg = self._wallet_api_request("wallet/getuser", "POST", payload)
+            return response, msg, 
             
         except Exception as e:
             logger.error("get_wallet_by_phone@Error")
@@ -253,8 +253,8 @@ class WalletsAfricaAPI:
                 "secretKey": self.secret_key
             })
 
-            response = self._wallet_api_request("wallet/balance", "POST", payload)
-            return response
+            response, msg = self._wallet_api_request("wallet/balance", "POST", payload)
+            return response, msg
             
         except Exception as e:
             logger.error("get_wallet_balance@Error")
@@ -271,8 +271,8 @@ class WalletsAfricaAPI:
                 "secretKey": self.secret_key
             })
 
-            response = self._wallet_api_request("wallet/nuban", "POST", payload)
-            return response
+            response, msg = self._wallet_api_request("wallet/nuban", "POST", payload)
+            return response, msg
             
         except Exception as e:
             logger.error("get_wallet_acct_number@Error")
@@ -284,8 +284,8 @@ class WalletsAfricaAPI:
         Get transaction details about wallet to bank transfer
         """
         try:
-            response = self._wallet_api_request("transfer/banks/all", "POST")
-            return response
+            response, msg = self._wallet_api_request("transfer/banks/all", "POST")
+            return response, msg
             
         except Exception as e:
             logger.error("get_bank_transfer_info@Error")
@@ -302,8 +302,8 @@ class WalletsAfricaAPI:
                 "secretKey": self.secret_key
             })
 
-            response = self._wallet_api_request("transfer/bank/details", "POST", payload)
-            return response
+            response, msg = self._wallet_api_request("transfer/bank/details", "POST", payload)
+            return response, msg
             
         except Exception as e:
             logger.error("get_bank_transfer_info@Error")
@@ -321,8 +321,8 @@ class WalletsAfricaAPI:
                 "AccountNumber": accountNumber
             })
 
-            response = self._wallet_api_request("transfer/bank/account/enquire", "POST", payload)
-            return response
+            response, msg = self._wallet_api_request("transfer/bank/account/enquire", "POST", payload)
+            return response, msg
             
         except Exception as e:
             logger.error("bank_account_enquiry@Error")
@@ -344,8 +344,8 @@ class WalletsAfricaAPI:
                 "Narration": description
             })
 
-            response = self._wallet_api_request("transfer/bank/account", "POST", payload)
-            return response
+            response, msg = self._wallet_api_request("transfer/bank/account", "POST", payload)
+            return response, msg
             
         except Exception as e:
             logger.error("bank_account_transfer@Error")
