@@ -56,18 +56,3 @@ def successResponse(httpStatusCode=HTTPStatus.OK, message="", body={}, paginatio
     response = JsonResponse(responseData, status=httpStatusCode, safe=False)
         
     return response
-
-
-# helper functions
-
-def getUserIpAddress(request):
-    if request.META.get('HTTP_X_FORWARDED_FOR'):
-        ip = request.META.get('HTTP_X_FORWARDED_FOR')
-    elif request.META.get('HTTP_X_FORWARDED_HOST'):
-        ip = request.META.get('HTTP_X_FORWARDED_HOST')
-    elif request.META.get('HTTP_X_FORWARDED_SERVER'):
-        ip = request.META.get('HTTP_X_FORWARDED_SERVER')
-    else:
-        ip = request.META.get('REMOTE_ADDR')
-        
-    return ip
