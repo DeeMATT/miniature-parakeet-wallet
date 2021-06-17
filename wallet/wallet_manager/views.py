@@ -17,6 +17,8 @@ wallets_api = WalletsAfricaAPI()
 
 
 def createSubWalletForUser(request):
+    if request.method != "POST":
+        return badRequestResponse(getError(ErrorCodes.GENERIC_ERROR, "HTTP method should be POST"))
     body = json.loads(request.body)
     # verify that the calling user has a valid secret
     secret = request.headers.get('Secret')
@@ -61,16 +63,26 @@ def createSubWalletForUser(request):
     return successResponse("Wallet created", createdWalletData)
 
 
-def getWalletBalance(request):
+def getSubWalletBalance(request):
     pass
 
-def debitWallet(request):
+def debitSubWalletFromMainWallet(request):
     pass
 
-def creditWallet(request):
+def creditSubWalletFromMainWallet(request):
     pass
 
-def get_wallet_transactions(request):
+def retrieveSubWalletTransactions(request):
+    # add filter param for transaction type, default to all
+    # add filter param for date range, (dateFrom, dateTo)
+    # today, yesterday, last 7 days, this month, last 30 days, all time
+
     pass
 
-def 
+def subWalletTransferToBankAcct(request):
+    pass
+
+def subWalletTransferToSubWallet(request):
+    pass
+
+
