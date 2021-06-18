@@ -6,6 +6,8 @@ class ErrorCodes(IntEnum):
     GENERIC_ERROR = 0
     UNAUTHENTICATED_REQUEST = 1
     UNAUTHORIZED_REQUEST = 2
+    INVALID_CREDENTIALS = 3
+    MISSING_FIELDS = 4
 
 
 # base error
