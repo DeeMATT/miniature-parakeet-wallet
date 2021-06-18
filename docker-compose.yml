@@ -1,0 +1,12 @@
+version: '3'
+services:
+    
+  api: 
+    build: .
+    image: lola-wallet-api
+    container_name: lola-wallet-api
+    restart: always
+    command: ["daphne", "-b", "0.0.0.0", "-p", "9180", "wallet_config.asgi:application"]
+    ports:
+      - 9180:9180
+
