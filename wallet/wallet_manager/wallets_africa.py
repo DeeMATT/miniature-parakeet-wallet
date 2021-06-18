@@ -50,10 +50,18 @@ class WalletsAfricaAPI:
             response_status_code = response['Response']['ResponseCode']
 
             if response_status_code not in range(200, 299):
-                data = response['Response']
+                if 'Response' in response:
+                    data = response['Response']
+                else:
+                    data = response
                 return self._error_response(response_status_code, data), False
+            else:
+                if 'Data' in response:
+                    data = response['Data']
+                else:
+                    data = response
 
-            return response['Data'], True
+            return data, True
 
         except Exception as e:
             logger.error("_wallet_api_request@Error")
