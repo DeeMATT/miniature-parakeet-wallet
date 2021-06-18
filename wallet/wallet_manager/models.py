@@ -1,4 +1,5 @@
 from django.db import models
+import uuid
 
 
 class UserWalletData(models.Model):
@@ -16,4 +17,4 @@ class UserWalletData(models.Model):
     account_name = models.TextField(null=True)
     available_balance = models.TextField(null=True)
 
-    wallet_key = models.TextField(null=True)
+    wallet_key = models.TextField(default=str(uuid.uuid4())[:14].replace("-", ''))
