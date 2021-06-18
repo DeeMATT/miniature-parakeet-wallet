@@ -130,10 +130,16 @@ USE_L10N = True
 
 USE_TZ = True
 
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost'
+]
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = False
 CORS_EXPOSE_HEADERS = [
-    'Access-Control-Allow-Origin'
+    'Access-Control-Allow-Methods',
+    'Access-Control-Allow-Origin',
+    'Access-Control-Allow-Headers',
+    'Access-Control-Max-Age'
 ]
 
 CORS_ALLOW_HEADERS = list(default_headers) + [
