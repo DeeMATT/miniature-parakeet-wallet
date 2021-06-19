@@ -1,16 +1,15 @@
 from django.urls import path
 from .views import (
-    createSubWalletForUser, retrieveSubWalletTransactions, getSubWalletBalance, setWalletPin,
-    retrieveSubWalletSpending, subWalletTransferToBankAcct, getAllBanks
+    createSubWalletForUser, retrieveSubWalletTransactions, getWalletInfo, setWalletPin,
+    subWalletTransferToBankAcct, getAllBanks, bankAccountEnquiry
     )
 
 urlpatterns = [
     path('create', createSubWalletForUser),
     path('set-pin', setWalletPin),
-    path('balance', getSubWalletBalance),
+    path('account/info', getWalletInfo),
     path('transactions', retrieveSubWalletTransactions),
-    path('transactions/aggregate', retrieveSubWalletSpending),
     path('transfer/bank', subWalletTransferToBankAcct),
-    path('transfer/bank/all', getAllBanks)
-
+    path('transfer/bank/all', getAllBanks),
+    path('transfer/account/validate', bankAccountEnquiry),
 ]
