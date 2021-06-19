@@ -189,7 +189,7 @@ class WalletsAfricaAPI:
             logger.error(e)
             return None, str(e)
 
-    def get_wallet_transactions(self, pin, phoneNumber, dateFrom, dateTo, transactionType=0, take=1000, skip=0, currency="NGN"):
+    def get_wallet_transactions(self, pin, phoneNumber, dateFrom, dateTo, transactionType=0, take=1000000, skip=0, currency="NGN"):
         """
         Get list of transactions for a wallet
         """
