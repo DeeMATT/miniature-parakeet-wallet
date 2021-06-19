@@ -137,7 +137,7 @@ def getSubWalletBalance(request):
         return unAuthorizedResponse(getError(ErrorCodes.UNAUTHORIZED_REQUEST, "The email specified isn't associated with the wallet for secret key"))
 
     phone_number = existingWallet.phone_number
-    # check wallet balance
+    # get wallet balance
     balance, msg = wallets_api.get_wallet_balance(phone_number)
     if balance == None:
         return internalServerErrorResponse(getError(ErrorCodes.GENERIC_ERROR, msg))
@@ -265,7 +265,21 @@ def retrieveSubWalletTransactions(request):
         except Exception as e:
             return badRequestResponse(ErrorCodes.GENERIC_INVALID_PARAMETERS, message="TransactionType param shuld be a number")
 
-    # check wallet balance
+    if 'day' in queryDict:
+        try:
+            day = queryDict.get('day')
+            if day == 'all':
+                date_from = str(parse(existingWallet.created_at).date())
+            elif day == 'month':
+                day = date.today().day - 1
+                date_from = date.today() - timedelta(days=day)
+            else:
+                day = int(day)
+                date_from = str(date.today() - timedelta(days=day))
+        except Exception as e:
+            return badRequestResponse(ErrorCodes.GENERIC_INVALID_PARAMETERS, message="Day param shuld be any of <<0, 1, 7, 30, month or all>>")
+
+    # retrieve wallet transactions
     transactions, msg = wallets_api.get_wallet_transactions(pin, phone_number, date_from, date_to, transaction_type)
     if transactions == None:
         return internalServerErrorResponse(getError(ErrorCodes.GENERIC_ERROR, msg))
