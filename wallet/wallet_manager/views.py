@@ -139,7 +139,6 @@ def getSubWalletBalance(request):
     phone_number = existingWallet.phone_number
     # check wallet balance
     balance, msg = wallets_api.get_wallet_balance(phone_number)
-
     if balance == None:
         return internalServerErrorResponse(getError(ErrorCodes.GENERIC_ERROR, msg))
     if not msg:
@@ -154,7 +153,7 @@ def debitSubWalletFromMainWallet(request):
 def creditSubWalletFromMainWallet(request):
     pass
 
-def retrieveSubWalletSpending(request):
+def getWalletInfo(request):
     if request.method != "POST":
         return badRequestResponse(getError(ErrorCodes.GENERIC_ERROR, "HTTP method should be POST"))
 
@@ -178,35 +177,11 @@ def retrieveSubWalletSpending(request):
     
     phone_number = existingWallet.phone_number
 
-    queryDict = request.GET
-    date_from = str(date.today())
+    # get wallet transactions
     date_to = str(date.today())  
-    transaction_type = 0
-    # transaction type code --- Credit = 1, Debit = 2, All = 0 or 3
-    if 'transaction_type' in queryDict:
-        try:
-            transaction_type = int(queryDict.get('transaction_type'))
-            if transaction_type not in (0, 1, 2, 3):
-                return badRequestResponse(ErrorCodes.GENERIC_INVALID_PARAMETERS, message="TransactionType param must be any of <<0, 1, 2, 3>>")
-            
-        except Exception as e:
-            return badRequestResponse(ErrorCodes.GENERIC_INVALID_PARAMETERS, message="TransactionType param shuld be a number")
-
-    if 'day' in queryDict:
-        try:
-            day = queryDict.get('day')
-            if day == 'all':
-                date_from = str(parse(existingWallet.created_at).date())
-            elif day == 'month':
-                day = date.today().day - 1
-                date_from = date.today() - timedelta(days=day)
-            else:
-                day = int(day)
-                date_from = str(date.today() - timedelta(days=day))
-        except Exception as e:
-            return badRequestResponse(ErrorCodes.GENERIC_INVALID_PARAMETERS, message="Day param shuld be any of <<0, 1, 7, 30, month or all>>")
-
-    # check wallet balance
+    date_from = str(parse(existingWallet.created_at).date())
+    transaction_type=0
+    
     transactions, msg = wallets_api.get_wallet_transactions(pin, phone_number, date_from, date_to, transaction_type)
     if transactions == None:
         return internalServerErrorResponse(getError(ErrorCodes.GENERIC_ERROR, msg))
@@ -215,52 +190,42 @@ def retrieveSubWalletSpending(request):
         return transactions
 
     transactions = transactions['Transactions']
-    if 'aggregate' in queryDict and queryDict.get('aggregate') == True:
-        totalDebitAmount = 0
-        totalCreditAmount = 0
-        for data in transactions:
-            if data['Type'] == "Credit":
-                totalDebitAmount += data['Amount']
-            if data['Type'] == "Debit":
-                totalCreditAmount = data['Amount']
+    totalDebitAmount = 0
+    totalCreditAmount = 0
+    for data in transactions:
+        if data['Type'] == "Credit":
+            totalDebitAmount += data['Amount']
+        if data['Type'] == "Debit":
+            totalCreditAmount = data['Amount']
+
+    # get user data
+    walletByEmail, msg = wallets_api.get_wallet_by_email(email_address)
+    if walletByEmail == None:
+        return internalServerErrorResponse(getError(ErrorCodes.GENERIC_ERROR, msg))
+    elif msg:
+        return resourceConflictResponse(getError(ErrorCodes.GENERIC_ERROR, "Wallets Already Exist for the Phone number specified"))
+    
+    currentBalance = walletByEmail.get("AvailableBalance")
+    walletData = {
+        "firstName": walletByEmail.get("FirstName"),
+        "lastName": walletByEmail.get("LastName"),
+        "emailAddress": walletByEmail.get("Email"),
+        "phoneNumber": walletByEmail.get("PhoneNumber"),
+        "walletCreationDate": walletByEmail.get("DateSignedup"),
+        "walletAccountNumber": walletByEmail.get("AccountNo"),
+        "walletAccountName": walletByEmail.get("AccountName"),
+        "walletBank": walletByEmail.get("Bank"),
+        "walletAvailableBalance": walletByEmail.get("AvailableBalance")
+    }
         
-        aggregate_balance = {
-            "TotalMoneyReceived": totalCreditAmount,
-            "TotalMoneySpent": totalDebitAmount
-        }
+    response_data = {
+        "currentBalance": currentBalance,
+        "totalMoneyReceived": totalCreditAmount,
+        "totalMoneySpent": totalDebitAmount,
+        "walletInfo": walletData
+    }
         
-        return successResponse("Wallet Aggregate Balances", body=aggregate_balance)
-
-    # Paginate the retrieved transaction
-    if queryDict.get('pageBy'):
-        pageBy = request.GET.get('pageBy')
-    else:
-        pageBy = 10
-
-    paginator = Paginator(transactions, pageBy)
-
-    if queryDict.get('page'):
-        pageNum = request.GET.get('page')
-    else:
-        pageNum = 1
-
-    # try if the page requested exists or is empty
-    try:
-        transactions = paginator.page(pageNum)
-
-        paginationDetails = {
-            "totalPages": paginator.num_pages,
-            "limit": pageBy,
-            "count": paginator.count,
-            "currentPage": pageNum
-        }
-    except Exception as e:
-        print(e)
-        transactions = []
-        paginationDetails = {}
-
-    return paginatedResponse("Wallet transactions", body=transactions, pagination=paginationDetails)
-
+    return successResponse("Wallet Information", body=response_data)
 
 def retrieveSubWalletTransactions(request):
     if request.method != "POST":
@@ -340,7 +305,6 @@ def retrieveSubWalletTransactions(request):
 
     return paginatedResponse("Wallet transactions", body=transactions, pagination=paginationDetails)
 
-
 def subWalletTransferToBankAcct(request):
     if request.method != "POST":
         return badRequestResponse(getError(ErrorCodes.GENERIC_ERROR, "HTTP method should be POST"))
@@ -413,7 +377,6 @@ def getAllBanks(request):
         return all_banks
 
     return successResponse("All Banks", body=all_banks)
-
 
 def bankAccountEnquiry(request):
     if request.method != "POST":
