@@ -23,19 +23,19 @@ class WalletsAfricaAPI:
         status_code = str(code)
 
         if status_code == "400":
-            return badRequestResponse(status_code, data)
+            return badRequestResponse(data)
         if status_code == "401":
-            return unAuthenticatedResponse(status_code, data)
+            return unAuthenticatedResponse(data)
         if status_code == "403":
-            return unAuthorizedResponse(status_code, data)
+            return unAuthorizedResponse(data)
         if status_code == "404":
-            return resourceNotFoundResponse(status_code, data)
+            return resourceNotFoundResponse(data)
         if status_code == "409":
-            return resourceConflictResponse(status_code, data)
+            return resourceConflictResponse(data)
         if status_code == "500":
-            return internalServerErrorResponse(status_code, data)
+            return internalServerErrorResponse(data)
 
-        return badRequestResponse(status_code, data)
+        return badRequestResponse(data)
 
     def _wallet_api_request(self, endpoint, http_method, payload={}):
         try:
@@ -49,7 +49,7 @@ class WalletsAfricaAPI:
             response = api_request.json()
             response_status_code = response['Response']['ResponseCode']
 
-            if response_status_code not in range(200, 299):
+            if int(response_status_code) not in range(200, 299):
                 if 'Response' in response:
                     data = response['Response']
                 else:
