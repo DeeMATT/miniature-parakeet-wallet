@@ -53,7 +53,7 @@ def createSubWalletForUser(request):
     # check if sub wallet exists for phone number passed
     existingWalletByPhone, msg = wallets_api.get_wallet_by_phone(phone_number)
     if existingWalletByPhone == None:
-        return internalServerErrorResponse  (getError(ErrorCodes.GENERIC_ERROR, msg))
+        return internalServerErrorResponse(getError(ErrorCodes.GENERIC_ERROR, msg))
     elif msg:
         return resourceConflictResponse(getError(ErrorCodes.GENERIC_ERROR, "Wallets Already Exist for the Phone number specified"))
 
@@ -76,7 +76,7 @@ def createSubWalletForUser(request):
     user_wallet = createUserWalletData(createdWalletData)
     wallet_key = user_wallet.wallet_key
 
-    return successResponse("Wallet created", body={"wallet_key": wallet_key})
+    return successResponse(message="Wallet created", body={"wallet_key": wallet_key})
 
 def setWalletPin(request):
     # make sure to set initial_wallet_pin_changed attribute
@@ -113,7 +113,7 @@ def setWalletPin(request):
         # the request failed
         return pinChange
 
-    return successResponse("Wallet pin", body={})
+    return successResponse(message="Wallet pin", body={})
 
 def getSubWalletBalance(request):
     if request.method != "POST":
@@ -145,7 +145,7 @@ def getSubWalletBalance(request):
         # the request failed
         return balance
 
-    return successResponse("Wallet balance", body=balance)
+    return successResponse(message="Wallet balance", body=balance)
 
 def debitSubWalletFromMainWallet(request):
     pass
@@ -225,7 +225,7 @@ def getWalletInfo(request):
         "walletInfo": walletData
     }
         
-    return successResponse("Wallet Information", body=response_data)
+    return successResponse(message="Wallet Information", body=response_data)
 
 def retrieveSubWalletTransactions(request):
     if request.method != "POST":
@@ -374,7 +374,7 @@ def subWalletTransferToBankAcct(request):
         # the request failed
         return transfer
 
-    return successResponse("Wallet to Bank Account Transfer", body=transfer)
+    return successResponse(message="Wallet to Bank Account Transfer", body=transfer)
 
 def subWalletTransferToSubWallet(request):
     pass
@@ -390,7 +390,7 @@ def getAllBanks(request):
         # the request failed
         return all_banks
 
-    return successResponse("All Banks", body=all_banks)
+    return successResponse(message="All Banks", body=all_banks)
 
 def bankAccountEnquiry(request):
     if request.method != "POST":
@@ -413,4 +413,4 @@ def bankAccountEnquiry(request):
         # the request failed
         return bank_account
 
-    return successResponse("Bank Account Enquiry", body=bank_account)
+    return successResponse(message="Bank Account Enquiry", body=bank_account)
