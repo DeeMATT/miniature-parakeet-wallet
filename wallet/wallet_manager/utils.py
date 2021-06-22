@@ -2,6 +2,7 @@ from .models import UserWalletData
 import logging
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
+import uuid
 
 
 
@@ -19,7 +20,8 @@ def createUserWalletData(data):
             account_no=data.get('AccountNo'),
             bank_name=data.get('Bank'),
             account_name=data.get('AccountName'),
-            available_balance=data.get('AvailableBalance')
+            available_balance=data.get('AvailableBalance'),
+            wallet_key=str(uuid.uuid4())[:14].replace("-", '')
         )
         return object
 
