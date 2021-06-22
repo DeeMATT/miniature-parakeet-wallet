@@ -17,4 +17,4 @@ class UserWalletData(models.Model):
     account_name = models.TextField(null=True)
     available_balance = models.TextField(null=True)
 
-    wallet_key = models.TextField(default=str(uuid.uuid4())[:14].replace("-", ''))
+    wallet_key = models.TextField(null=True)
