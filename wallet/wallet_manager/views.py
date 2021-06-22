@@ -79,8 +79,6 @@ def createSubWalletForUser(request):
     return successResponse(message="Wallet created", body={"wallet_key": wallet_key})
 
 def setWalletPin(request):
-    # make sure to set initial_wallet_pin_changed attribute
-
     if request.method != "POST":
         return badRequestResponse(getError(ErrorCodes.GENERIC_ERROR, "HTTP method should be POST"))
 
