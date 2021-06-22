@@ -111,7 +111,7 @@ def setWalletPin(request):
         # the request failed
         return pinChange
 
-    return successResponse(message="Wallet pin", body={})
+    return successResponse(message="Wallet pin changed successfully", body={})
 
 def getSubWalletBalance(request):
     if request.method != "POST":
