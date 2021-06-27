@@ -47,18 +47,22 @@ class WalletsAfricaAPI:
             }
             api_request = requests.request(method, url, headers=header, data=payload)
             response = api_request.json()
-            if 'ResponseCode' in response:
-                response_status_code = response['ResponseCode']
-            else:
-                response_status_code = response['Response']['ResponseCode']
             
-            logger.info(response)
-            if int(response_status_code) not in range(200, 299):
-                if 'Response' in response:
-                    data = response['Response']
+            if isinstance(response, dict):
+                if 'ResponseCode' in response:
+                    response_status_code = response['ResponseCode']
                 else:
-                    data = response
-                return self._error_response(response_status_code, data), False
+                    response_status_code = response['Response']['ResponseCode']
+            else:
+                response_status_code = api_request.status_code
+                
+            if int(response_status_code) not in range(200, 299):
+                if isinstance(response, dict):
+                    if 'Response' in response:
+                        data = response['Response']
+                    else:
+                        data = response
+                    return self._error_response(response_status_code, data), False
             else:
                 if isinstance(response, dict):
                     data = response['Data']
