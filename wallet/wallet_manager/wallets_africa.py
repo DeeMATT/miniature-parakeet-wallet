@@ -51,7 +51,8 @@ class WalletsAfricaAPI:
                 response_status_code = response['ResponseCode']
             else:
                 response_status_code = response['Response']['ResponseCode']
-
+            
+            logger.info(response)
             if int(response_status_code) not in range(200, 299):
                 if 'Response' in response:
                     data = response['Response']
