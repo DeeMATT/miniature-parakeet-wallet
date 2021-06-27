@@ -59,7 +59,7 @@ class WalletsAfricaAPI:
                     data = response
                 return self._error_response(response_status_code, data), False
             else:
-                if 'Data' in response:
+                if isinstance(response, dict):
                     data = response['Data']
                 else:
                     data = response
