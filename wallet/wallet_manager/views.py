@@ -62,7 +62,7 @@ def createSubWalletForUser(request):
     if existingWalletByEmail == None:
         return internalServerErrorResponse(getError(ErrorCodes.GENERIC_ERROR, msg))
     elif msg:
-        return resourceConflictResponse(getError(ErrorCodes.GENERIC_ERROR, "Wallets Already Exist for the Phone number specified"))
+        return resourceConflictResponse(getError(ErrorCodes.GENERIC_ERROR, "Wallets Already Exist for the Email Address specified"))
 
     # generate sub-wallet
     createdWalletData, outcome = wallets_api.generate_wallet(first_name, last_name, email, birthday, phone_number)
@@ -200,8 +200,9 @@ def getWalletInfo(request):
     walletByEmail, msg = wallets_api.get_wallet_by_email(email_address)
     if walletByEmail == None:
         return internalServerErrorResponse(getError(ErrorCodes.GENERIC_ERROR, msg))
-    elif msg:
-        return resourceConflictResponse(getError(ErrorCodes.GENERIC_ERROR, "Wallets Already Exist for the Phone number specified"))
+    elif not msg:
+        # the request failed
+        return walletByEmail
     
     currentBalance = walletByEmail.get("AvailableBalance")
     walletData = {
