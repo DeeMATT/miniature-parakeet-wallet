@@ -333,7 +333,7 @@ def subWalletTransferToBankAcct(request):
     email_address = body['email_address']
     bank_code = body['bank_code']
     account_number = body['account_number']
-    amount = body['amount']
+    amount = float(body['amount'])
     account_name = body['account_name']
     description = body['description']
 
