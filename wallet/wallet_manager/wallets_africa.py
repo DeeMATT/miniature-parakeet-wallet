@@ -47,7 +47,7 @@ class WalletsAfricaAPI:
             }
             api_request = requests.request(method, url, headers=header, data=payload)
             response = api_request.json()
-            
+
             if isinstance(response, dict):
                 if 'ResponseCode' in response:
                     response_status_code = response['ResponseCode']
@@ -251,7 +251,7 @@ class WalletsAfricaAPI:
             })
 
             response, msg = self._wallet_api_request("wallet/getuser", "POST", payload)
-            return response, msg, 
+            return response, msg
             
         except Exception as e:
             logger.error("get_wallet_by_phone@Error")
