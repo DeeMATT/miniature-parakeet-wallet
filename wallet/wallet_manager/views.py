@@ -28,6 +28,13 @@ def getWalletUsingKey(secretKey):
     except UserWalletData.DoesNotExist:
         return None
 
+def serializeTransactions(transactions):
+    try:
+        return [x for x in transactions]
+
+    except Exception as e:
+        return []
+
 
 def createSubWalletForUser(request):
     if request.method != "POST":
@@ -285,7 +292,7 @@ def retrieveSubWalletTransactions(request):
     if not msg:
         # the request failed
         return transactions
-
+    
     transactions = transactions['Transactions']
 
     # Paginate the retrieved transaction
@@ -303,7 +310,7 @@ def retrieveSubWalletTransactions(request):
 
     # try if the page requested exists or is empty
     try:
-        transactions = paginator.page(pageNum)
+        paginated_transactions = paginator.page(pageNum)
 
         paginationDetails = {
             "totalPages": paginator.num_pages,
@@ -313,10 +320,10 @@ def retrieveSubWalletTransactions(request):
         }
     except Exception as e:
         print(e)
-        transactions = []
+        paginated_transactions = []
         paginationDetails = {}
 
-    return paginatedResponse("Wallet transactions", body=transactions, pagination=paginationDetails)
+    return paginatedResponse(message="Wallet transactions", body=serializeTransactions(paginated_transactions), pagination=paginationDetails)
 
 def subWalletTransferToBankAcct(request):
     if request.method != "POST":
