@@ -194,7 +194,7 @@ def getWalletInfo(request):
         # the request failed
         return transactions
 
-    transactions = transactions['Transactions']
+    transactions = transactions['data']['transactions']
     totalDebitAmount = 0
     totalCreditAmount = 0
     for data in transactions:
