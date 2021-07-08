@@ -17,8 +17,6 @@ import uuid
 # instantiate
 wallets_api = WalletsAfricaAPI()
 
-# create wallets api key upon registering as tenant
-# create wallets api key for members upon approval or admin signup
 
 def getWalletUsingKey(secretKey):
     try:
@@ -27,6 +25,7 @@ def getWalletUsingKey(secretKey):
     
     except UserWalletData.DoesNotExist:
         return None
+
 
 def serializeTransactions(transactions):
     try:
@@ -85,6 +84,7 @@ def createSubWalletForUser(request):
 
     return successResponse(message="Wallet created", body={"wallet_key": wallet_key})
 
+
 def setWalletPin(request):
     if request.method != "POST":
         return badRequestResponse(getError(ErrorCodes.GENERIC_ERROR, "HTTP method should be POST"))
@@ -120,6 +120,7 @@ def setWalletPin(request):
 
     return successResponse(message="Wallet pin changed successfully", body={})
 
+
 def getSubWalletBalance(request):
     if request.method != "POST":
         return badRequestResponse(getError(ErrorCodes.GENERIC_ERROR, "HTTP method should be POST"))
@@ -152,11 +153,88 @@ def getSubWalletBalance(request):
 
     return successResponse(message="Wallet balance", body=balance)
 
-def debitSubWalletFromMainWallet(request):
-    pass
 
-def creditSubWalletFromMainWallet(request):
-    pass
+def debitSubWallet(request):
+    if request.method != "POST":
+        return badRequestResponse(getError(ErrorCodes.GENERIC_ERROR, "HTTP method should be POST"))
+
+    body = json.loads(request.body)
+
+    # check if required fields are present in request payload
+    missingKeys = validateKeys(payload=body, requiredKeys=['secret_key', 'email_address', 'amount'])
+    if missingKeys:
+        return badRequestResponse(getError(ErrorCodes.MISSING_FIELDS, f"The following key(s) are missing in the request payload: {missingKeys}"))
+
+    secretKey = body['secret_key']
+    amount = float(body['amount'])
+    email_address = body['email_address']
+
+    # validate secret key
+    existingWallet = getWalletUsingKey(secretKey)
+    if not existingWallet:
+        return badRequestResponse(getError(ErrorCodes.UNAUTHORIZED_REQUEST, "No wallet exists for the specified secret key"))
+    elif existingWallet.email_address != email_address:
+        return unAuthorizedResponse(getError(ErrorCodes.UNAUTHORIZED_REQUEST, "The email specified isn't associated with the wallet for secret key"))
+
+    phone_number = existingWallet.phone_number
+    # get wallet balance
+    balance, msg = wallets_api.get_wallet_balance(phone_number)
+
+    if balance == None:
+        return internalServerErrorResponse(getError(ErrorCodes.GENERIC_ERROR, msg))
+    if not msg:
+        # the request failed
+        return balance
+
+    if balance['WalletBalance'] >= amount:
+        # debit wallet
+        debit_reference = str(uuid.uuid4())[:12]
+        debit, msg = wallets_api.debit_wallet(amount, phone_number, debit_reference)
+        if debit == None:
+            return internalServerErrorResponse(getError(ErrorCodes.GENERIC_ERROR, msg))
+        if not msg:
+            # the request failed
+            return debit
+
+    return successResponse(message="Wallet Debit to Main Wallet Transfer", body=debit)
+
+
+def creditSubWallet(request):
+    if request.method != "POST":
+        return badRequestResponse(getError(ErrorCodes.GENERIC_ERROR, "HTTP method should be POST"))
+
+    root_secret = request.headers.get('Secret')
+    if root_secret != settings.ROOT_SECRET:
+        return unAuthorizedResponse(getError(ErrorCodes.GENERIC_ERROR, "Permission Denied"))
+
+    body = json.loads(request.body)
+
+    # check if required fields are present in request payload
+    missingKeys = validateKeys(payload=body, requiredKeys=['secret_key', 'amount'])
+    if missingKeys:
+        return badRequestResponse(getError(ErrorCodes.MISSING_FIELDS, f"The following key(s) are missing in the request payload: {missingKeys}"))
+
+    secretKey = body['secret_key']
+    amount = float(body['amount'])
+
+    # validate secret key
+    existingWallet = getWalletUsingKey(secretKey)
+    if not existingWallet:
+        return badRequestResponse(getError(ErrorCodes.UNAUTHORIZED_REQUEST, "No wallet exists for the specified secret key"))
+    
+    phone_number = existingWallet.phone_number
+
+    # credit wallet
+    credit_reference = str(uuid.uuid4())[:12]
+    credit, msg = wallets_api.credit_wallet(credit_reference, amount, phone_number)
+    if credit == None:
+        return internalServerErrorResponse(getError(ErrorCodes.GENERIC_ERROR, msg))
+    if not msg:
+        # the request failed
+        return credit
+
+    return successResponse(message="Main Wallet Credit to Sub Wallet", body=credit)
+
 
 def getWalletInfo(request):
     if request.method != "POST":
@@ -232,6 +310,7 @@ def getWalletInfo(request):
     }
         
     return successResponse(message="Wallet Information", body=response_data)
+
 
 def retrieveSubWalletTransactions(request):
     if request.method != "POST":
@@ -325,6 +404,7 @@ def retrieveSubWalletTransactions(request):
 
     return paginatedResponse(message="Wallet transactions", body=serializeTransactions(paginated_transactions), pagination=paginationDetails)
 
+
 def subWalletTransferToBankAcct(request):
     if request.method != "POST":
         return badRequestResponse(getError(ErrorCodes.GENERIC_ERROR, "HTTP method should be POST"))
@@ -382,8 +462,10 @@ def subWalletTransferToBankAcct(request):
 
     return successResponse(message="Wallet to Bank Account Transfer", body=transfer)
 
+
 def subWalletTransferToSubWallet(request):
     pass
+
 
 def getAllBanks(request):
     if request.method != "GET":
@@ -397,6 +479,7 @@ def getAllBanks(request):
         return all_banks
 
     return successResponse(message="All Banks", body=all_banks)
+
 
 def bankAccountEnquiry(request):
     if request.method != "POST":
