@@ -133,9 +133,8 @@ class WalletsAfricaAPI:
 
     def credit_wallet(self, reference, amount, phoneNumber):
         """
-        Perform a credit on a sub wallet
+        Perform a credit from main wallet to sub wallet
         """
-        # str(uuid.uuid1()).replace("-", "")
         try:
             payload = json.dumps({
                 "transactionReference": reference,
@@ -144,7 +143,7 @@ class WalletsAfricaAPI:
                 "secretKey": self.secret_key
             })
 
-            response, msg = self._wallet_api_request("wallet/debit", "POST", payload)
+            response, msg = self._wallet_api_request("wallet/credit", "POST", payload)
             return response, msg
             
         except Exception as e:
