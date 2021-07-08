@@ -195,8 +195,15 @@ def debitSubWallet(request):
         if not msg:
             # the request failed
             return debit
+    else:
+        return badRequestResponse("Insufficient funds", body={})
 
-    return successResponse(message="Wallet Debit to Main Wallet Transfer", body=debit)
+    data = {
+        "amount": amount,
+        "reference": debit_reference
+    }
+
+    return successResponse(message="Wallet Debit to Main Wallet Transfer", body=data)
 
 
 def creditSubWallet(request):
@@ -233,7 +240,12 @@ def creditSubWallet(request):
         # the request failed
         return credit
 
-    return successResponse(message="Main Wallet Credit to Sub Wallet", body=credit)
+    data = {
+        "amount": amount,
+        "reference": credit_reference
+    }
+
+    return successResponse(message="Main Wallet Credit to Sub Wallet", body=data)
 
 
 def getWalletInfo(request):
