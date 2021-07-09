@@ -1,7 +1,8 @@
 from django.urls import path
 from .views import (
     createSubWalletForUser, retrieveSubWalletTransactions, getWalletInfo, setWalletPin,
-    subWalletTransferToBankAcct, getAllBanks, bankAccountEnquiry
+    subWalletTransferToBankAcct, getAllBanks, bankAccountEnquiry, debitSubWallet,
+    creditSubWallet
     )
 
 urlpatterns = [
@@ -12,4 +13,6 @@ urlpatterns = [
     path('transfer/bank', subWalletTransferToBankAcct),
     path('transfer/bank/all', getAllBanks),
     path('transfer/account/validate', bankAccountEnquiry),
+    path('debit', debitSubWallet),
+    path('credit', creditSubWallet),
 ]
