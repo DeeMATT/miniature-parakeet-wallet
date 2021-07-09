@@ -130,7 +130,7 @@ class WalletsAfricaAPI:
             logger.error("debit_wallet@Error")
             logger.error(e)
             return None, str(e)
-
+    
     def credit_wallet(self, reference, amount, phoneNumber):
         """
         Perform a credit from main wallet to sub wallet

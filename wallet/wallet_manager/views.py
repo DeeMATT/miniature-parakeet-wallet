@@ -185,7 +185,7 @@ def debitSubWallet(request):
     if not msg:
         # the request failed
         return balance
-
+    
     if balance['WalletBalance'] >= amount:
         # debit wallet
         debit_reference = str(uuid.uuid4())[:12]
