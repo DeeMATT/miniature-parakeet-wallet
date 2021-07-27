@@ -384,7 +384,7 @@ def retrieveSubWalletTransactions(request):
         # the request failed
         return transactions
     
-    transactions = transactions['Transactions']
+    transactions = transactions['data']['transactions']
 
     # Paginate the retrieved transaction
     if queryDict.get('pageBy'):
