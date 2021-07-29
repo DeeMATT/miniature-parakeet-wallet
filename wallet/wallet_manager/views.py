@@ -301,17 +301,18 @@ def getWalletInfo(request):
         # the request failed
         return walletByEmail
     
-    currentBalance = walletByEmail.get("AvailableBalance")
+    walletData = walletByEmail['data']
+    currentBalance = walletData.get("availableBalance")
     walletData = {
-        "firstName": walletByEmail.get("FirstName"),
-        "lastName": walletByEmail.get("LastName"),
-        "emailAddress": walletByEmail.get("Email"),
-        "phoneNumber": walletByEmail.get("PhoneNumber"),
-        "walletCreationDate": walletByEmail.get("DateSignedup"),
-        "walletAccountNumber": walletByEmail.get("AccountNo"),
-        "walletAccountName": walletByEmail.get("AccountName"),
-        "walletBank": walletByEmail.get("Bank"),
-        "walletAvailableBalance": walletByEmail.get("AvailableBalance")
+        "firstName": walletData.get("firstName"),
+        "lastName": walletData.get("lastName"),
+        "emailAddress": walletData.get("email"),
+        "phoneNumber": walletData.get("phoneNumber"),
+        "walletCreationDate": walletData.get("dateSignedup"),
+        "walletAccountNumber": walletData.get("accountNumber"),
+        "walletAccountName": walletData.get("accountName"),
+        "walletBank": walletData.get("bank"),
+        "walletAvailableBalance": walletData.get("availableBalance")
     }
         
     response_data = {
